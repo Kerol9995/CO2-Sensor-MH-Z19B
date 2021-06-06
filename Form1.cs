@@ -47,9 +47,9 @@ namespace WindowsFormsApp2
             {
                 recData++;
                 int CO2 = receivedData[2] * 256 + receivedData[3];
-                int temp = receivedData[4] - 40;
+                int temp = receivedData[4] - 40 + (int)numericUpDown2.Value;
                 label1.Text = CO2.ToString() + " ppm";
-                label2.Text = temp.ToString() + "*";
+                label2.Text = temp.ToString() + "°C";
                 label4.Text = ((total - recData) / total).ToString("p2");
                 if (CO2 < 1200)
                 {
@@ -60,14 +60,14 @@ namespace WindowsFormsApp2
                 if (CO2 < 800) chart1.Series[0].Color = Color.Green;
                 chart1.Series[0].Points.AddXY(DateTime.Now.ToShortTimeString(), CO2);
                 chart1.Series[1].Points.AddXY(DateTime.Now.ToShortTimeString(), temp);
-                if (chart1.Series[0].Points.Count > 361)
+                if (chart1.Series[0].Points.Count > 359)
                 {
                     chart1.Series[0].Points.RemoveAt(0);
                     chart1.Series[1].Points.RemoveAt(0);
                 }
                 using (StreamWriter sw = new StreamWriter("CO2log.txt", true, System.Text.Encoding.Default))
                 {
-                    sw.WriteLine(DateTime.Now + "\tCO2=" + CO2 + " ppm\tT=" + temp + "*");
+                    sw.WriteLine(DateTime.Now + "\tCO2=" + CO2 + " ppm\tT=" + temp + "°C");
                 }
             }
             else
@@ -158,6 +158,11 @@ namespace WindowsFormsApp2
         {
             drawData();
             timer2.Stop();
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            timer1.Interval= (int)numericUpDown1.Value;
         }
     }
 }
