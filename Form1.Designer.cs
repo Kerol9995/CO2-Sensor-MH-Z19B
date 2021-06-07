@@ -30,10 +30,10 @@ namespace WindowsFormsApp2
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button1 = new System.Windows.Forms.Button();
@@ -62,35 +62,35 @@ namespace WindowsFormsApp2
             // 
             // chart1
             // 
-            chartArea3.AxisX.Interval = 30D;
-            chartArea3.AxisY.Interval = 200D;
-            chartArea3.AxisY.Maximum = 1200D;
-            chartArea3.AxisY.Minimum = 400D;
-            chartArea3.AxisY2.Interval = 10D;
-            chartArea3.AxisY2.Maximum = 40D;
-            chartArea3.AxisY2.Minimum = 0D;
-            chartArea3.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea3);
+            chartArea2.AxisX.Interval = 30D;
+            chartArea2.AxisY.Interval = 200D;
+            chartArea2.AxisY.Maximum = 1200D;
+            chartArea2.AxisY.Minimum = 400D;
+            chartArea2.AxisY2.Interval = 10D;
+            chartArea2.AxisY2.Maximum = 40D;
+            chartArea2.AxisY2.Minimum = 0D;
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            legend3.DockedToChartArea = "ChartArea1";
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend3.Name = "Legend1";
-            this.chart1.Legends.Add(legend3);
+            legend2.DockedToChartArea = "ChartArea1";
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
             this.chart1.Location = new System.Drawing.Point(0, 51);
             this.chart1.Name = "chart1";
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = System.Drawing.Color.Green;
-            series5.Legend = "Legend1";
-            series5.Name = "CO2";
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Color = System.Drawing.Color.Blue;
-            series6.Legend = "Legend1";
-            series6.Name = "Temp";
-            series6.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            this.chart1.Series.Add(series5);
-            this.chart1.Series.Add(series6);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = System.Drawing.Color.Green;
+            series3.Legend = "Legend1";
+            series3.Name = "CO2";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Color = System.Drawing.Color.Blue;
+            series4.Legend = "Legend1";
+            series4.Name = "Temp";
+            series4.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            this.chart1.Series.Add(series3);
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(1184, 610);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
@@ -174,7 +174,7 @@ namespace WindowsFormsApp2
             // 
             // timer2
             // 
-            this.timer2.Interval = 55;
+            this.timer2.Interval = 60;
             this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
             // 
             // numericUpDown1
@@ -200,7 +200,7 @@ namespace WindowsFormsApp2
             this.numericUpDown1.TabIndex = 9;
             this.numericUpDown1.ThousandsSeparator = true;
             this.numericUpDown1.Value = new decimal(new int[] {
-            60000,
+            1000,
             0,
             0,
             0});
