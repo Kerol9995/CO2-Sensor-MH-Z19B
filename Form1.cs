@@ -16,10 +16,13 @@ namespace WindowsFormsApp2
 
         byte[] CO2read = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
         byte[] CO2calibration = { 0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
+        byte[] OnSelfCalibration = { 0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6 };
+        byte[] OffSelfCalibration = { 0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86 };
         byte[] receivedData = new byte[9];
         string selectedPort;
         double total = 0;
         double recData = 0;
+
         private byte getCheckSum(byte[] packet)
         {
             byte checksum = 0;
@@ -31,6 +34,7 @@ namespace WindowsFormsApp2
             checksum += 1;
             return checksum;
         }
+
         private void getports()
         {
             string[] ports = System.IO.Ports.SerialPort.GetPortNames();
@@ -40,6 +44,7 @@ namespace WindowsFormsApp2
                 //Console.WriteLine(port);
             }
         }
+
         public void drawData()
         {
             //Console.WriteLine(getCheckSum(receivedData) + " " + receivedData[8]);
@@ -81,16 +86,19 @@ namespace WindowsFormsApp2
                 //chart1.ChartAreas[0].AxisY.ScaleView.Zoom(400, 2000);
             }
         }
+
         public Form1()
         {
             InitializeComponent();
             getports();
         }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             serialPort1.Write(CO2read, 0, 9);
             timer2.Start();
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             if (selectedPort == null) MessageBox.Show("Select COMport!");
@@ -113,7 +121,7 @@ namespace WindowsFormsApp2
                     serialPort1.Close();
                     //Console.WriteLine("Close");
                     button1.Text = "Connect";
-                    button1.BackColor = Color.Green;
+                    button1.BackColor = Color.LimeGreen;
                     timer1.Enabled = false;
                     timer2.Enabled = false;
                     total = 0;
@@ -121,39 +129,47 @@ namespace WindowsFormsApp2
                 }
             }
         }
+
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
             serialPort1.Read(receivedData, 0, 9);
             total++;
         }
+
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedPort = comboBox1.Text;
         }
+
         private void button2_Click(object sender, EventArgs e)
         {
-            DialogResult result= MessageBox.Show("Before calibrating the zero point, please ensure that the sensor is stable for more than 20 minutes at 400ppm ambient environment.", "Warning",
+            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
+            else
+            {
+                DialogResult result = MessageBox.Show("Before calibrating the zero point, please ensure that the sensor is stable for more than 20 minutes at 400ppm ambient environment.", "Warning",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2,
                 MessageBoxOptions.DefaultDesktopOnly);
-            if (result == DialogResult.Yes) 
-            {
-                if (MessageBox.Show("Are you sure?", "Question",
-                MessageBoxButtons.OKCancel,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2,
-                MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
+                if (result == DialogResult.Yes)
                 {
-                    //serialPort1.Write(CO2calibration, 0, 9);
-                    MessageBox.Show("Done!!!", "Information",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information,
-                        MessageBoxDefaultButton.Button1,
-                        MessageBoxOptions.DefaultDesktopOnly);
+                    if (MessageBox.Show("Are you sure?", "Question",
+                    MessageBoxButtons.OKCancel,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2,
+                    MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
+                    {
+                        serialPort1.Write(CO2calibration, 0, 9);
+                        MessageBox.Show("Done!!!", "Information",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information,
+                            MessageBoxDefaultButton.Button1,
+                            MessageBoxOptions.DefaultDesktopOnly);
+                    }
                 }
             }
         }
+
         private void timer2_Tick(object sender, EventArgs e)
         {
             drawData();
@@ -163,6 +179,26 @@ namespace WindowsFormsApp2
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
             timer1.Interval= (int)numericUpDown1.Value;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
+            else
+            {
+                if (button3.BackColor == Color.LimeGreen)
+                {
+                    serialPort1.Write(OffSelfCalibration, 0, 9);
+                    button3.BackColor = SystemColors.Control;
+                    button3.Text = "On/Off Self-calibration for Zero Point (OFF)";
+                }
+                else
+                {
+                    serialPort1.Write(OnSelfCalibration, 0, 9);
+                    button3.BackColor = Color.LimeGreen;
+                    button3.Text = "On/Off Self-calibration for Zero Point (ON)";
+                }
+            }
         }
     }
 }
