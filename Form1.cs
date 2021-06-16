@@ -106,7 +106,9 @@ namespace WindowsFormsApp2
         private void timer1_Tick(object sender, EventArgs e)
         {
             request(co2read, 0);
-            timer2.Start();
+            while (!newReceived) ;
+            newReceived = false;
+            drawData();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -122,8 +124,11 @@ namespace WindowsFormsApp2
                     button1.Text = "Disconnect";
                     button1.BackColor = Color.Red;
                     request(co2read, 0);
+                    while (!newReceived) ;
+                    newReceived = false;
+                    drawData();
                     timer1.Enabled = true;
-                    timer2.Enabled = true;
+                    //timer2.Enabled = true;
                     
                 }
                 else
@@ -133,7 +138,7 @@ namespace WindowsFormsApp2
                     button1.Text = "Connect";
                     button1.BackColor = Color.LimeGreen;
                     timer1.Enabled = false;
-                    timer2.Enabled = false;
+                    //timer2.Enabled = false;
                     total = 0;
                     recData = 0;
                 }
@@ -142,9 +147,10 @@ namespace WindowsFormsApp2
 
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            newReceived = true;
+            
             serialPort1.Read(receivedData, 0, 9);
             total++;
+            newReceived = true;
             Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
         }
 
@@ -172,21 +178,27 @@ namespace WindowsFormsApp2
                     MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
                     {
                         request(CO2calibration, 0);
-                        MessageBox.Show("Done!!!", "Information",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Information,
-                            MessageBoxDefaultButton.Button1,
-                            MessageBoxOptions.DefaultDesktopOnly);
+                        //while (!newReceived) ;
+                        //newReceived = false;
+                        //if(receivedData[1] == CO2calibration & receivedData[2] == 1)
+                        //{
+                            MessageBox.Show("Done!!!", "Information",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information,
+                                MessageBoxDefaultButton.Button1,
+                                MessageBoxOptions.DefaultDesktopOnly);
+                        //}
+                        //else
+                        //{
+                        //    MessageBox.Show("No response.", "Information",
+                        //        MessageBoxButtons.OK,
+                        //        MessageBoxIcon.Information,
+                        //        MessageBoxDefaultButton.Button1,
+                        //        MessageBoxOptions.DefaultDesktopOnly);
+                        //}
                     }
                 }
             }
-        }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-            drawData();
-            newReceived = false;
-            timer2.Stop();
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
@@ -201,6 +213,7 @@ namespace WindowsFormsApp2
             {
                 request(getABC, 0);
                 while (!newReceived) ;
+                newReceived = false;
                 Console.WriteLine(receivedData[7]);
                 if (receivedData[7]==0)
                 {
@@ -224,7 +237,9 @@ namespace WindowsFormsApp2
             {
                 request(getRange, 0);
                 while (!newReceived) ;
+                newReceived = false;
                 button4.Text = (receivedData[4] * 256 + receivedData[5]).ToString();
+                
             }
         }
     }

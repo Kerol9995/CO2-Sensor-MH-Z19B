@@ -44,7 +44,6 @@ namespace WindowsFormsApp2
             this.label4 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
@@ -173,11 +172,6 @@ namespace WindowsFormsApp2
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // timer2
-            // 
-            this.timer2.Interval = 60;
-            this.timer2.Tick += new System.EventHandler(this.timer2_Tick);
-            // 
             // numericUpDown1
             // 
             this.numericUpDown1.Increment = new decimal(new int[] {
@@ -304,7 +298,6 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Timer timer2;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.NumericUpDown numericUpDown2;
