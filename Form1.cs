@@ -13,11 +13,14 @@ namespace WindowsFormsApp2
 {
     public partial class Form1 : Form
     {
-
-        byte[] CO2read = { 0xFF, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
-        byte[] CO2calibration = { 0xFF, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
-        byte[] OnSelfCalibration = { 0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6 };
-        byte[] OffSelfCalibration = { 0xFF, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86 };
+        byte co2read = 0x86;
+        byte getRange = 0x9B;
+        byte getABC = 0x7D;
+        byte CO2calibration = 0x87;
+        byte SelfCalibration = 0x79;
+        byte OnSelfCalibration = 0xA0;
+        byte OffSelfCalibration = 0x00;
+        bool newReceived = false;
         byte[] receivedData = new byte[9];
         string selectedPort;
         double total = 0;
@@ -33,6 +36,13 @@ namespace WindowsFormsApp2
             checksum = (byte)(packet[0] - checksum);
             checksum += 1;
             return checksum;
+        }
+
+        private void request(byte cmd, byte value)
+        {
+            byte[] arr = { 0xFF, 0x01, cmd, value, 0x00, 0x00, 0x00, 0x00, 0x00 };
+            arr[8] = getCheckSum(arr);
+            serialPort1.Write(arr, 0, 9);
         }
 
         private void getports()
@@ -95,7 +105,7 @@ namespace WindowsFormsApp2
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            serialPort1.Write(CO2read, 0, 9);
+            request(co2read, 0);
             timer2.Start();
         }
 
@@ -111,7 +121,7 @@ namespace WindowsFormsApp2
                     //Console.WriteLine("Open");
                     button1.Text = "Disconnect";
                     button1.BackColor = Color.Red;
-                    serialPort1.Write(CO2read, 0, 9);
+                    request(co2read, 0);
                     timer1.Enabled = true;
                     timer2.Enabled = true;
                     
@@ -132,8 +142,10 @@ namespace WindowsFormsApp2
 
         private void serialPort1_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
+            newReceived = true;
             serialPort1.Read(receivedData, 0, 9);
             total++;
+            Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -159,7 +171,7 @@ namespace WindowsFormsApp2
                     MessageBoxDefaultButton.Button2,
                     MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
                     {
-                        serialPort1.Write(CO2calibration, 0, 9);
+                        request(CO2calibration, 0);
                         MessageBox.Show("Done!!!", "Information",
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Information,
@@ -173,6 +185,7 @@ namespace WindowsFormsApp2
         private void timer2_Tick(object sender, EventArgs e)
         {
             drawData();
+            newReceived = false;
             timer2.Stop();
         }
 
@@ -186,18 +199,32 @@ namespace WindowsFormsApp2
             if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
             else
             {
-                if (button3.BackColor == Color.LimeGreen)
+                request(getABC, 0);
+                while (!newReceived) ;
+                Console.WriteLine(receivedData[7]);
+                if (receivedData[7]==0)
                 {
-                    serialPort1.Write(OffSelfCalibration, 0, 9);
+                    request(SelfCalibration, OnSelfCalibration);
                     button3.BackColor = SystemColors.Control;
                     button3.Text = "On/Off Self-calibration for Zero Point (OFF)";
                 }
                 else
                 {
-                    serialPort1.Write(OnSelfCalibration, 0, 9);
+                    request(SelfCalibration, OffSelfCalibration);
                     button3.BackColor = Color.LimeGreen;
                     button3.Text = "On/Off Self-calibration for Zero Point (ON)";
                 }
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
+            else
+            {
+                request(getRange, 0);
+                while (!newReceived) ;
+                button4.Text = (receivedData[4] * 256 + receivedData[5]).ToString();
             }
         }
     }
