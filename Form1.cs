@@ -69,10 +69,19 @@ namespace WindowsFormsApp2
                 if (CO2 < 1200)
                 {
                     chart1.Series[0].Color = Color.Red;
+                    label1.ForeColor = Color.Red;
                     //System.Media.SystemSounds.Exclamation.Play();
                 }
-                if (CO2 < 1000) chart1.Series[0].Color = Color.Orange;
-                if (CO2 < 800) chart1.Series[0].Color = Color.Green;
+                if (CO2 < 1000)
+                {
+                    chart1.Series[0].Color = Color.Orange;
+                    label1.ForeColor = Color.Orange;
+                }
+                if (CO2 < 800)
+                {
+                    chart1.Series[0].Color = Color.LimeGreen;
+                    label1.ForeColor = Color.LimeGreen;
+                }
                 chart1.Series[0].Points.AddXY(DateTime.Now.ToShortTimeString(), CO2);
                 chart1.Series[1].Points.AddXY(DateTime.Now.ToShortTimeString(), temp);
                 if (chart1.Series[0].Points.Count > 359)
@@ -137,6 +146,7 @@ namespace WindowsFormsApp2
                     //Console.WriteLine("Close");
                     button1.Text = "Connect";
                     button1.BackColor = Color.LimeGreen;
+                    newReceived = false;
                     timer1.Enabled = false;
                     //timer2.Enabled = false;
                     total = 0;
@@ -211,21 +221,34 @@ namespace WindowsFormsApp2
             if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
             else
             {
-                request(getABC, 0);
+                request(getABC, 0);                                    //125
                 while (!newReceived) ;
                 newReceived = false;
-                Console.WriteLine(receivedData[7]);
-                if (receivedData[7]==0)
+                total--;
+                //Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
+                if (receivedData[1] == getABC & receivedData[7]==0)
                 {
-                    request(SelfCalibration, OnSelfCalibration);
-                    button3.BackColor = SystemColors.Control;
-                    button3.Text = "On/Off Self-calibration for Zero Point (OFF)";
+                    request(SelfCalibration, OnSelfCalibration);        //121
+                    while (!newReceived) ;
+                    newReceived = false;
+                    total--;
+                    if (receivedData[1]==SelfCalibration & receivedData[2] == 1)
+                    {
+                        button3.BackColor = Color.LimeGreen;
+                        button3.Text = "On/Off Self-calibration for Zero Point (ON)";
+                    }
                 }
                 else
                 {
                     request(SelfCalibration, OffSelfCalibration);
-                    button3.BackColor = Color.LimeGreen;
-                    button3.Text = "On/Off Self-calibration for Zero Point (ON)";
+                    while (!newReceived) ;
+                    newReceived = false;
+                    total--;
+                    if (receivedData[1] == SelfCalibration & receivedData[2] == 1)
+                    {
+                        button3.BackColor = SystemColors.Control;
+                        button3.Text = "On/Off Self-calibration for Zero Point (OFF)";
+                    }
                 }
             }
         }
@@ -238,8 +261,22 @@ namespace WindowsFormsApp2
                 request(getRange, 0);
                 while (!newReceived) ;
                 newReceived = false;
+                total--;
                 button4.Text = (receivedData[4] * 256 + receivedData[5]).ToString();
                 
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
+            else
+            {
+                request(getABC, 0);
+                while (!newReceived) ;
+                newReceived = false;
+                total--;
+                button5.Text = receivedData[7].ToString();
             }
         }
     }
