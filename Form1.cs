@@ -66,7 +66,19 @@ namespace WindowsFormsApp2
                 label1.Text = CO2.ToString() + " ppm";
                 label2.Text = temp.ToString() + "°C";
                 label4.Text = ((total - recData) / total).ToString("p2");
-                if (CO2 < 1200)
+                if (CO2 > 1200)
+                {
+                    chart1.ChartAreas[0].AxisY.Minimum = 1000D;
+                    chart1.ChartAreas[0].AxisY.Maximum = 5000D;
+                    chart1.ChartAreas[0].AxisY.Interval = 1000D;
+                }
+                else
+                {
+                    chart1.ChartAreas[0].AxisY.Minimum = 400D;
+                    chart1.ChartAreas[0].AxisY.Maximum = 1200D;
+                    chart1.ChartAreas[0].AxisY.Interval = 200D;
+                }
+                if (CO2 < 5000)
                 {
                     chart1.Series[0].Color = Color.Red;
                     label1.ForeColor = Color.Red;
@@ -136,6 +148,17 @@ namespace WindowsFormsApp2
                     while (!newReceived) ;
                     newReceived = false;
                     drawData();
+                    request(getRange, 0);
+                    while (!newReceived) ;
+                    newReceived = false;
+                    total--;
+                    label7.Text = "Range:  " + (receivedData[4] * 256 + receivedData[5]).ToString();
+                    request(getABC, 0);
+                    while (!newReceived) ;
+                    newReceived = false;
+                    total--;
+                    label8.Text = "Self-Calibr:  " + ((receivedData[7] == 0) ? "Off" : "On");
+                    button3.BackColor = (receivedData[7] == 0) ? SystemColors.Control : Color.LimeGreen;
                     timer1.Enabled = true;
                     //timer2.Enabled = true;
                     
@@ -235,7 +258,8 @@ namespace WindowsFormsApp2
                     if (receivedData[1]==SelfCalibration & receivedData[2] == 1)
                     {
                         button3.BackColor = Color.LimeGreen;
-                        button3.Text = "On/Off Self-calibration for Zero Point (ON)";
+                        button3.Text = "On/Off Self-calibration for Zero Point";
+                        label8.Text = "Self-Calibr:  " +  "On";
                     }
                 }
                 else
@@ -247,36 +271,10 @@ namespace WindowsFormsApp2
                     if (receivedData[1] == SelfCalibration & receivedData[2] == 1)
                     {
                         button3.BackColor = SystemColors.Control;
-                        button3.Text = "On/Off Self-calibration for Zero Point (OFF)";
+                        button3.Text = "On/Off Self-calibration for Zero Point";
+                        label8.Text = "Self-Calibr:  " +  "Off";
                     }
                 }
-            }
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
-            else
-            {
-                request(getRange, 0);
-                while (!newReceived) ;
-                newReceived = false;
-                total--;
-                button4.Text = (receivedData[4] * 256 + receivedData[5]).ToString();
-                
-            }
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
-            else
-            {
-                request(getABC, 0);
-                while (!newReceived) ;
-                newReceived = false;
-                total--;
-                button5.Text = receivedData[7].ToString();
             }
         }
     }

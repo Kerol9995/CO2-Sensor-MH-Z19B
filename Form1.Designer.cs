@@ -30,10 +30,10 @@ namespace WindowsFormsApp2
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button1 = new System.Windows.Forms.Button();
@@ -49,8 +49,8 @@ namespace WindowsFormsApp2
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
@@ -63,35 +63,35 @@ namespace WindowsFormsApp2
             // 
             // chart1
             // 
-            chartArea1.AxisX.Interval = 30D;
-            chartArea1.AxisY.Interval = 200D;
-            chartArea1.AxisY.Maximum = 1200D;
-            chartArea1.AxisY.Minimum = 400D;
-            chartArea1.AxisY2.Interval = 10D;
-            chartArea1.AxisY2.Maximum = 40D;
-            chartArea1.AxisY2.Minimum = 0D;
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
+            chartArea3.AxisX.Interval = 30D;
+            chartArea3.AxisY.Interval = 200D;
+            chartArea3.AxisY.Maximum = 1200D;
+            chartArea3.AxisY.Minimum = 400D;
+            chartArea3.AxisY2.Interval = 10D;
+            chartArea3.AxisY2.Maximum = 40D;
+            chartArea3.AxisY2.Minimum = 0D;
+            chartArea3.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea3);
             this.chart1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            legend1.DockedToChartArea = "ChartArea1";
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
+            legend3.DockedToChartArea = "ChartArea1";
+            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Left;
+            legend3.Name = "Legend1";
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(0, 51);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = System.Drawing.Color.LimeGreen;
-            series1.Legend = "Legend1";
-            series1.Name = "CO2";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = System.Drawing.Color.Blue;
-            series2.Legend = "Legend1";
-            series2.Name = "Temp";
-            series2.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
-            this.chart1.Series.Add(series1);
-            this.chart1.Series.Add(series2);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Color = System.Drawing.Color.LimeGreen;
+            series5.Legend = "Legend1";
+            series5.Name = "CO2";
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Color = System.Drawing.Color.Blue;
+            series6.Legend = "Legend1";
+            series6.Name = "Temp";
+            series6.YAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
+            this.chart1.Series.Add(series5);
+            this.chart1.Series.Add(series6);
             this.chart1.Size = new System.Drawing.Size(1184, 610);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
@@ -246,37 +246,35 @@ namespace WindowsFormsApp2
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(120, 34);
             this.button3.TabIndex = 13;
-            this.button3.Text = "On/Off Self-calibration for Zero Point (ON)";
+            this.button3.Text = "On/Off Self-calibration for Zero Point";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // button4
+            // label7
             // 
-            this.button4.Location = new System.Drawing.Point(644, 12);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 14;
-            this.button4.Text = "Get Range";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(514, 12);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(42, 13);
+            this.label7.TabIndex = 16;
+            this.label7.Text = "Range:";
             // 
-            // button5
+            // label8
             // 
-            this.button5.Location = new System.Drawing.Point(725, 12);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 15;
-            this.button5.Text = "Get ABC";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(514, 29);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(57, 13);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "Self-Calibr:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1184, 661);
-            this.Controls.Add(this.button5);
-            this.Controls.Add(this.button4);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.numericUpDown2);
@@ -317,8 +315,8 @@ namespace WindowsFormsApp2
         private System.Windows.Forms.NumericUpDown numericUpDown2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }
 
