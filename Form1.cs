@@ -43,6 +43,8 @@ namespace WindowsFormsApp2
             byte[] arr = { 0xFF, 0x01, cmd, value, 0x00, 0x00, 0x00, 0x00, 0x00 };
             arr[8] = getCheckSum(arr);
             serialPort1.Write(arr, 0, 9);
+            while (!newReceived) ;
+            newReceived = false;
         }
 
         private void getports()
@@ -127,8 +129,6 @@ namespace WindowsFormsApp2
         private void timer1_Tick(object sender, EventArgs e)
         {
             request(co2read, 0);
-            while (!newReceived) ;
-            newReceived = false;
             drawData();
         }
 
@@ -145,17 +145,11 @@ namespace WindowsFormsApp2
                     button1.Text = "Disconnect";
                     button1.BackColor = Color.Red;
                     request(co2read, 0);
-                    while (!newReceived) ;
-                    newReceived = false;
                     drawData();
                     request(getRange, 0);
-                    while (!newReceived) ;
-                    newReceived = false;
                     total--;
                     label7.Text = "Range:  " + (receivedData[4] * 256 + receivedData[5]).ToString();
                     request(getABC, 0);
-                    while (!newReceived) ;
-                    newReceived = false;
                     total--;
                     label8.Text = "Self-Calibr:  " + ((receivedData[7] == 0) ? "Off" : "On");
                     button3.BackColor = (receivedData[7] == 0) ? SystemColors.Control : Color.LimeGreen;
@@ -184,7 +178,7 @@ namespace WindowsFormsApp2
             serialPort1.Read(receivedData, 0, 9);
             total++;
             newReceived = true;
-            Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
+            //Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -211,8 +205,6 @@ namespace WindowsFormsApp2
                     MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
                     {
                         request(CO2calibration, 0);
-                        //while (!newReceived) ;
-                        //newReceived = false;
                         //if(receivedData[1] == CO2calibration & receivedData[2] == 1)
                         //{
                             MessageBox.Show("Done!!!", "Information",
@@ -245,15 +237,11 @@ namespace WindowsFormsApp2
             else
             {
                 request(getABC, 0);                                    //125
-                while (!newReceived) ;
-                newReceived = false;
                 total--;
                 //Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
                 if (receivedData[1] == getABC & receivedData[7]==0)
                 {
                     request(SelfCalibration, OnSelfCalibration);        //121
-                    while (!newReceived) ;
-                    newReceived = false;
                     total--;
                     if (receivedData[1]==SelfCalibration & receivedData[2] == 1)
                     {
@@ -265,8 +253,6 @@ namespace WindowsFormsApp2
                 else
                 {
                     request(SelfCalibration, OffSelfCalibration);
-                    while (!newReceived) ;
-                    newReceived = false;
                     total--;
                     if (receivedData[1] == SelfCalibration & receivedData[2] == 1)
                     {
