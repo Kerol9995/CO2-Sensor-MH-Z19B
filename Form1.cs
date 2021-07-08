@@ -15,6 +15,7 @@ namespace WindowsFormsApp2
     {
         byte co2read = 0x86;
         byte getRange = 0x9B;
+        byte setRange = 0x99;
         byte getABC = 0x7D;
         byte CO2calibration = 0x87;
         byte SelfCalibration = 0x79;
@@ -24,7 +25,7 @@ namespace WindowsFormsApp2
         byte[] receivedData = new byte[9];
         string selectedPort;
         double total = 0;
-        double recData = 0;
+        double responseData = 0;
 
         private byte getCheckSum(byte[] packet)
         {
@@ -43,10 +44,44 @@ namespace WindowsFormsApp2
             byte[] arr = { 0xFF, 0x01, cmd, value, 0x00, 0x00, 0x00, 0x00, 0x00 };
             arr[8] = getCheckSum(arr);
             serialPort1.Write(arr, 0, 9);
-            while (!newReceived) ;
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            while (!newReceived)
+            {
+                stopwatch.Start();
+                if (stopwatch.ElapsedMilliseconds > 300)
+                {
+                    stopwatch.Stop();
+                    timer1.Stop();
+                    label9.Visible = true;
+                    break;
+                }
+                stopwatch.Stop();
+            }
+            //Console.WriteLine(stopwatch.ElapsedMilliseconds);
             newReceived = false;
         }
 
+        private void request(byte cmd, byte value7, byte value8)
+        {
+            byte[] arr = { 0xFF, 0x01, cmd, 0x00, 0x00, 0x00, value7, value8, 0x00 };
+            arr[8] = getCheckSum(arr);
+            serialPort1.Write(arr, 0, 9);
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            while (!newReceived)
+            {
+                stopwatch.Start();
+                if (stopwatch.ElapsedMilliseconds > 300)
+                {
+                    stopwatch.Stop();
+                    timer1.Stop();
+                    label9.Visible = true;
+                    break;
+                }
+                stopwatch.Stop();
+            }
+            //Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            newReceived = false;
+        }
         private void getports()
         {
             string[] ports = System.IO.Ports.SerialPort.GetPortNames();
@@ -62,12 +97,12 @@ namespace WindowsFormsApp2
             //Console.WriteLine(getCheckSum(receivedData) + " " + receivedData[8]);
             if (getCheckSum(receivedData) == receivedData[8])
             {
-                recData++;
+                responseData++;
                 int CO2 = receivedData[2] * 256 + receivedData[3];
                 int temp = receivedData[4] - 40 + (int)numericUpDown2.Value;
                 label1.Text = CO2.ToString() + " ppm";
                 label2.Text = temp.ToString() + "°C";
-                label4.Text = ((total - recData) / total).ToString("p2");
+                label4.Text = ((total - responseData) / total).ToString("p2");
                 if (CO2 > 1200)
                 {
                     chart1.ChartAreas[0].AxisY.Minimum = 1000D;
@@ -110,7 +145,7 @@ namespace WindowsFormsApp2
             }
             else
             {
-                label4.Text = ((total - recData) / total).ToString("p2");
+                label4.Text = ((total - responseData) / total).ToString("p2");
                 using (StreamWriter sw = new StreamWriter("CO2log.txt", true, System.Text.Encoding.Default))
                 {
                     sw.WriteLine(DateTime.Now + "\tError\t" + receivedData[0] + ',' + receivedData[1] + ',' + receivedData[2] + ',' + receivedData[3] + ',' + receivedData[4] + ',' + receivedData[5] + ',' + receivedData[6] + ',' + receivedData[7] + ',' + receivedData[8] + '\t' + getCheckSum(receivedData));
@@ -167,7 +202,7 @@ namespace WindowsFormsApp2
                     timer1.Enabled = false;
                     //timer2.Enabled = false;
                     total = 0;
-                    recData = 0;
+                    responseData = 0;
                 }
             }
         }
@@ -205,6 +240,7 @@ namespace WindowsFormsApp2
                     MessageBoxOptions.DefaultDesktopOnly) == DialogResult.OK)
                     {
                         request(CO2calibration, 0);
+                        total--;
                         //if(receivedData[1] == CO2calibration & receivedData[2] == 1)
                         //{
                             MessageBox.Show("Done!!!", "Information",
@@ -262,6 +298,33 @@ namespace WindowsFormsApp2
                     }
                 }
             }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (!serialPort1.IsOpen) MessageBox.Show("COMport Closed!");
+            else
+            {
+                byte[] ar = BitConverter.GetBytes((int)numericUpDown3.Value);
+                request(setRange, ar[1], ar[0]);
+                total--;
+                if (receivedData[1] == setRange & receivedData[2] == 1)
+                {
+                    button4.BackColor = Color.LimeGreen;
+                    button4.Text = "Done!";
+                }
+                request(getRange, 0);
+                total--;
+                label7.Text = "Range:  " + (receivedData[4] * 256 + receivedData[5]).ToString();
+                //Console.WriteLine(receivedData[1] + ";" + receivedData[2] + ";" + receivedData[3] + ";" + receivedData[4] + ";" + receivedData[5] + ";" + receivedData[6] + ";" + receivedData[7] + ";" + receivedData[8]);
+
+            }
+        }
+
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+            button4.BackColor = SystemColors.Control;
+            button4.Text = "Set Range";
         }
     }
 }
