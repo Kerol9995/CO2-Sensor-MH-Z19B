@@ -131,6 +131,19 @@ namespace WindowsFormsApp2
                     chart1.Series[0].Color = Color.LimeGreen;
                     label1.ForeColor = Color.LimeGreen;
                 }
+                System.Media.SoundPlayer simpleSound = new System.Media.SoundPlayer(@"Warning.wav");
+                if (CO2 > numericUpDown4.Value)
+                {
+                    try
+                    {
+                        simpleSound.Play();
+                    }
+                    catch
+                    {
+                        System.Media.SystemSounds.Beep.Play();
+                    }
+                }
+                    
                 chart1.Series[0].Points.AddXY(DateTime.Now.ToShortTimeString(), CO2);
                 chart1.Series[1].Points.AddXY(DateTime.Now.ToShortTimeString(), temp);
                 if (chart1.Series[0].Points.Count > 359)
@@ -178,7 +191,7 @@ namespace WindowsFormsApp2
                     serialPort1.Open();
                     //Console.WriteLine("Open");
                     button1.Text = "Disconnect";
-                    button1.BackColor = Color.Red;
+                    button1.BackColor = Color.Gray;
                     request(co2read, 0);
                     drawData();
                     request(getRange, 0);
